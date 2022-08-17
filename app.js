@@ -8,16 +8,16 @@ d3.json("data/samples.json").then((sampleData) => {
     };
 })
 //  Create table 
-function metadata(id) {
+function buildMetadata(id) {
     d3.json("data/samples.json").then((sampleData) => {
         var metadata = sampleData.metadata;
         console.log(metadata);
         var results = metadata.filter(obj => obj.id == id)[0];
 
-        var panel = d3.select("#sample-metadata");
+        var panel = d3.select("sample-metadata");
         panel.html("");
         for (key in results) {
-            panel.append("").text(`${key}; ${results[key]}`);
+            panel.append("h6").text(`${key}; ${results[key]}`);
         };
     });
 }
