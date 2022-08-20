@@ -14,23 +14,25 @@ function buildMetadata(id) {
         console.log(metadata);
         var results = metadata.filter(obj => obj.id == id)[0];
 
-        var panel = d3.select("sample-metadata");
+        var panel = d3.select("#sample-metadata");
         panel.html("");
         for (key in results) {
             panel.append("h6").text(`${key}; ${results[key]}`);
         };
     });
 }
-
+// Build charts 
 function buildCharts(id) {
     d3.json("data/samples.json").then((sampleData) => {
         var samples = sampleData.samples;
+        var metadata = sampleData.metadata
+        var results_metadata = metadata.filter(x=>x.id === parseInt(id))
         console.log(samples);
-        var results = samples.filter(obj => obj.id == id)[0];
+        var results = samples.filter(obj => obj.id === id)[0];
         var ids = results.otu_ids;
         var labels = results.otu_labels;
         var values = results.sample_values;
-        // var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse()
+
 
         var barSampleData = [
             {
@@ -75,6 +77,8 @@ function buildCharts(id) {
         // build guage chart [OPTIONAL]
 
         // if wfreq has a null value, make it zero for calculating pointer later
+        // var wfreq = 
+        var wfreq = sampleData.wfreq
         if (wfreq == null) {
             wfreq = 0;
         }
@@ -88,22 +92,22 @@ function buildCharts(id) {
             gauge: {
                 axis: {
                     range: [0, 9],
-                    tickmode: 'linear', 
+                    tickmode: "linear", 
                     tickfont: {
                         size: 15
                     },
                 },
-                bar: { color: 'rgba(8,29,88,0)' }, // making gauge bar transparent since a pointer is being used instead
+                bar: { color: "rgba(8,29,88,0)" }, // making gauge bar transparent since a pointer is being used instead
                 steps: [
-                    { range: [0, 1], color: 'rgb(255,255,217)' },
-                    { range: [1, 2], color: 'rgb(237,248,217)' },
-                    { range: [2, 3], color: 'rgb(199,233,180)' },
-                    { range: [3, 4], color: 'rgb(127,205,187)' },
-                    { range: [4, 5], color: 'rgb(65,182,196)' },
-                    { range: [5, 6], color: 'rgb(29,145,192)' },
-                    { range: [6, 7], color: 'rgb(34,94,168)' },
-                    { range: [7, 8], color: 'rgb(37,52,148)' },
-                    { range: [8, 9], color: 'rgb(8,29,88)' }
+                    { range: [0, 1], color: "rgb(255,255,217)" },
+                    { range: [1, 2], color: "rgb(237,248,217)" },
+                    { range: [2, 3], color: "rgb(199,233,180)" },
+                    { range: [3, 4], color: "rgb(127,205,187)" },
+                    { range: [4, 5], color: "rgb(65,182,196)" },
+                    { range: [5, 6], color: "rgb(29,145,192)" },
+                    { range: [6, 7], color: "rgb(34,94,168)" },
+                    { range: [7, 8], color: "rgb(37,52,148)" },
+                    { range: [8, 9], color: "rgb(8,29,88)" }
                 ]
             }
         }
@@ -119,23 +123,23 @@ function buildCharts(id) {
 
         // // Path: to create needle shape (triangle). Initial coordinates of two of the triangle corners plus the third calculated end tip that points to the appropriate segment on the gauge 
         // M aX aY L bX bY L cX cY Z
-        var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+        var mainPath = "M -.0 -0.025 L .0 0.025 L ",
             cX = String(x),
             cY = String(y),
-            pathEnd = ' Z';
+            pathEnd = "Z";
         var path = mainPath + cX + " " + cY + pathEnd;
 
-        gaugeColors = ['rgb(8,29,88)', 'rgb(37,52,148)', 'rgb(34,94,168)', 'rgb(29,145,192)', 'rgb(65,182,196)', 'rgb(127,205,187)', 'rgb(199,233,180)', 'rgb(237,248,217)', 'rgb(255,255,217)', 'white']
+        gaugeColors = ["rgb(8,29,88)", "rgb(37,52,148)", "rgb(34,94,168)", "rgb(29,145,192)", "rgb(65,182,196)", "rgb(127,205,187)", "rgb(199,233,180)", "rgb(237,248,217)", "rgb(255,255,217)", "white"]
 
         // create a trace to draw the circle where the needle is centered
         var traceNeedleCenter = {
-            type: 'scatter',
+            type: "scatter",
             showlegend: false,
             x: [0],
             y: [0],
-            marker: { size: 35, color: '850000' },
-            name: wfreq,
-            hoverinfo: 'name'
+            marker: { size: 35, color: "850000" },
+            name: "wfreq",
+            hoverinfo: "name"
         };
 
         // // create a data array from the two traces
@@ -146,19 +150,19 @@ function buildCharts(id) {
 
             // draw the needle pointer shape using path defined above
             shapes: [{
-                type: 'path',
+                type: "path",
                 path: path,
-                fillcolor: '850000',
+                fillcolor: "850000",
                 line: {
-                    color: '850000'
+                    color: "850000"
                 },
             }],
             font: {
-                family: 'Quicksand'
+                family: "Quicksand"
             },
             hoverlabel: {
                 font: {
-                    family: 'Quicksand',
+                    family: "Quicksand",
                     size: 16
                 },
             },
@@ -166,7 +170,7 @@ function buildCharts(id) {
                 text: `<b>Test Subject ${id}</b><br><b>Belly Button Washing Frequency</b><br><br>Scrubs per Week`,
                 font: {
                     size: 18,
-                    color: 'rgb(34,94,168)'
+                    color: "rgb(34,94,168)"
                 },
             },
             height: 500,
