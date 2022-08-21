@@ -26,7 +26,7 @@ function buildCharts(id) {
     d3.json("data/samples.json").then((sampleData) => {
         var samples = sampleData.samples;
         var metadata = sampleData.metadata
-        var results_metadata = metadata.filter(x=>x.id === parseInt(id))
+        var results_metadata = metadata.filter(x=>x.id === parseInt(id))[0]
         console.log(samples);
         var results = samples.filter(obj => obj.id === id)[0];
         var ids = results.otu_ids;
@@ -78,7 +78,7 @@ function buildCharts(id) {
 
         // if wfreq has a null value, make it zero for calculating pointer later
         // var wfreq = 
-        var wfreq = sampleData.wfreq
+        var wfreq = results_metadata.wfreq
         if (wfreq == null) {
             wfreq = 0;
         }
